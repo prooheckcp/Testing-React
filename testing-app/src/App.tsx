@@ -1,11 +1,12 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import './App.css';
+import MovieCard from './MovieCard.tsx';
 import SearchIcon from './search.svg'
 
 const API_KEY : string = "66b19217";
 const API_URL : string = 'http://www.omdbapi.com?apikey=' + API_KEY;
 
-const movieTemplate = {
+const movie = {
     "Title": "Shrek the Third",
     "Year": "2007",
     "imdbID": "tt0413267",
@@ -14,12 +15,13 @@ const movieTemplate = {
 }
 
 const App : React.FC = () => {
-    
+    const [movies, setMovies] = useState([]);
+    const [searchTerm, setSearchTerm] = useState<string>('');
+
     const searchMovies = async (title) => {
         const response = await fetch(`${API_URL}&S=${title}`)
         const data = await response.json();
-
-        console.log(data)
+        setMovies(data.Search);
     }
 
     useEffect(()=>{
@@ -31,31 +33,36 @@ const App : React.FC = () => {
             <div className="app">
                 <h1>MovieLand</h1>
                 <div className="search">
-                    <input type="text" placeHolder="Search for movies" value="Superman" onChange={()=>{
-
+                    <input type="text" placeholder="Search for movies" value={searchTerm} onChange={(e)=>{
+                        setSearchTerm(e.target.value);
                     }}/>
 
                     <img src={SearchIcon} alt="" onClick={()=>{
-
+                        searchMovies(searchTerm);
                     }}/>
                 </div>
 
-                <div className="container">
-                    <div className="movie">
-                        <div>
-                            <p>{movieTemplate.Year}</p>
+                {
+                    movies?.length > 0
+                    ? (
+                        <div className="container">
+                            {
+                                movies.map((movie)=>(
+                                    <MovieCard Title={movie.Title} Year={movie.Year} Type={movie.Type} Poster={movie.Poster}/>
+                                ))
+                            }
+                            
+                        </div>                        
+                    )
+                    :
+                    (
+                        <div className="empty">
+                            <h2>No movies found</h2>
                         </div>
+                    )
+                }
 
-                        <div>
-                            <img src={movieTemplate.Poster !== 'N/A' ? movieTemplate.Poster : 'https://via.placeholder.com/400'} alt={movieTemplate.Title} />
-                        </div>
 
-                        <div>
-                            <span>{movieTemplate.Type}</span>
-                            <h3>{movieTemplate.Title}</h3>
-                        </div>
-                    </div>
-                </div>
             </div>
         </>    
     );
