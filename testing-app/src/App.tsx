@@ -6,14 +6,6 @@ import SearchIcon from './search.svg'
 const API_KEY : string = "66b19217";
 const API_URL : string = 'http://www.omdbapi.com?apikey=' + API_KEY;
 
-const movie = {
-    "Title": "Shrek the Third",
-    "Year": "2007",
-    "imdbID": "tt0413267",
-    "Type": "movie",
-    "Poster": "https://m.media-amazon.com/images/M/MV5BOTgyMjc3ODk2MV5BMl5BanBnXkFtZTcwMjY0MjEzMw@@._V1_SX300.jpg"
-}
-
 const App : React.FC = () => {
     const [movies, setMovies] = useState([]);
     const [searchTerm, setSearchTerm] = useState<string>('');
